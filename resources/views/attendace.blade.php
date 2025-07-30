@@ -453,45 +453,128 @@ function isMobile() {
         }
 
         // Reverse geocode coordinates to get location name
-        async function getLocationName(latitude, longitude) {
+    // Improved location name fetching with building-level accuracy
+async function getLocationName(latitude, longitude) {
     try {
+        // First try with zoom=18 (most detailed)
         const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`);
         const data = await response.json();
 
         if (data.error || !data.address) {
+            // Fallback to Google Maps API if available (uncomment if you have API key)
+             return await getGoogleLocationName(latitude, longitude, 'AIzaSyDNIw0SSOdVl5oaXZcItI7TKeim9liCjNY');
             return "Location name not available";
         }
 
         const address = data.address;
         let locationParts = [];
 
-        // Include as many detailed fields as possible
-        if (address.house_number) locationParts.push(address.house_number);
+        // Building-level details (most specific first)
         if (address.building) locationParts.push(address.building);
+        if (address.house_number) locationParts.push(address.house_number);
         if (address.road) locationParts.push(address.road);
-        if (address.neighbourhood) locationParts.push(address.neighbourhood);
-        if (address.suburb) locationParts.push(address.suburb);
+        
+        // If we don't have building-level details, include more general ones
+        if (locationParts.length === 0) {
+            if (address.pedestrian) locationParts.push(address.pedestrian);
+            if (address.footway) locationParts.push(address.footway);
+            if (address.neighbourhood) locationParts.push(address.neighbourhood);
+            if (address.suburb) locationParts.push(address.suburb);
+        }
+        
+        // City-level details
         if (address.village) locationParts.push(address.village);
         if (address.town) locationParts.push(address.town);
         if (address.city) locationParts.push(address.city);
-        if (address.state_district) locationParts.push(address.state_district);
+        if (address.county) locationParts.push(address.county);
+        
+        // Regional details
         if (address.state) locationParts.push(address.state);
-        if (address.postcode) locationParts.push(address.postcode);
         if (address.country) locationParts.push(address.country);
 
-        // Join parts with commas, and clean up
-        const locationName = locationParts.filter(Boolean).join(', ');
+        // If we have a named building, that might be enough
+        if (address.building && locationParts.length === 1) {
+            // Try to get more context
+            if (address.road) locationParts.push(address.road);
+            if (address.neighbourhood) locationParts.push(address.neighbourhood);
+        }
 
-        return locationName || "Location name not available";
+        // Fallback if we still have nothing
+        if (locationParts.length === 0) {
+            return `Near ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+        }
+
+        return locationParts.filter(Boolean).join(', ');
     } catch (error) {
         console.error("Geocoding error:", error);
         return "Location name not available";
     }
 }
 
+// Optional: Google Maps API fallback (uncomment and add your API key)
 
-        // Get geolocation
-       async function getLocation() {
+ async function getLocationName(latitude, longitude) {
+            const apiKey = 'AIzaSyDNIw0SSOdVl5oaXZcItI7TKeim9liCjNY'; // Your Google API key
+            try {
+                const response = await fetch(
+                    `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}&result_type=premise|street_address|point_of_interest`
+                );
+                const data = await response.json();
+
+                if (data.status !== "OK" || !data.results[0]) {
+                    // Fallback to Nominatim if Google fails
+                    return await getNominatimLocation(latitude, longitude);
+                }
+
+                // Try to get the most specific result first
+                const specificResults = data.results.filter(result => 
+                    result.types.includes('premise') || 
+                    result.types.includes('street_address') ||
+                    result.types.includes('point_of_interest')
+                );
+
+                // Return the most specific formatted address
+                return specificResults[0]?.formatted_address || data.results[0].formatted_address;
+            } catch (error) {
+                console.error("Google Geocoding error:", error);
+                return await getNominatimLocation(latitude, longitude);
+            }
+        }
+
+        // Fallback to Nominatim if Google fails
+        async function getNominatimLocation(latitude, longitude) {
+            try {
+                const response = await fetch(
+                    `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18`
+                );
+                const data = await response.json();
+                
+                if (data.address) {
+                    return formatNominatimAddress(data.address);
+                }
+                return `Near ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+            } catch (error) {
+                console.error("Nominatim error:", error);
+                return "Location name not available";
+            }
+        }
+
+        function formatNominatimAddress(address) {
+            const parts = [];
+            if (address.building) parts.push(address.building);
+            if (address.road) parts.push(address.road);
+            if (address.neighbourhood) parts.push(address.neighbourhood);
+            if (address.city || address.town || address.village) {
+                parts.push(address.city || address.town || address.village);
+            }
+            if (address.country) parts.push(address.country);
+            return parts.filter(Boolean).join(', ');
+        }
+
+// Main geolocation function
+async function getLocation() {
+    const locationText = document.getElementById('locationText') || document.createElement('div');
+    
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             async (position) => {
@@ -508,25 +591,52 @@ function isMobile() {
                     <br><i class="fas fa-circle-notch fa-spin"></i> Getting location name...
                 `;
 
-                // Get readable location name
-                const locationName = await getLocationName(latitude, longitude);
+                try {
+                    // Get readable location name
+                    const locationName = await getLocationName(latitude, longitude);
 
-                // Show name + coordinates
-                locationText.innerHTML = `
-                    <strong>${locationName}</strong><br>
-                    <small>Lat: ${latitude.toFixed(6)}, Lng: ${longitude.toFixed(6)}</small>
-                    <i class="fas fa-check-circle" style="color:var(--secondary-color)"></i>
-                `;
+                    // Show name + coordinates
+                    locationText.innerHTML = `
+                        <strong>${locationName}</strong><br>
+                        <small>Lat: ${latitude.toFixed(6)}, Lng: ${longitude.toFixed(6)}</small>
+                        <i class="fas fa-check-circle" style="color:var(--secondary-color)"></i>
+                    `;
 
-                // Optional: Save name to hidden input (if added)
-                const locationNameInput = document.getElementById('locationName');
-                if (locationNameInput) locationNameInput.value = locationName;
-
+                    // Optional: Save name to hidden input (if added)
+                    const locationNameInput = document.getElementById('locationName');
+                    if (locationNameInput) locationNameInput.value = locationName;
+                } catch (error) {
+                    console.error("Location processing error:", error);
+                    locationText.innerHTML = `
+                        <i class="fas fa-exclamation-triangle" style="color:var(--warning-color)"></i> 
+                        Could not determine address (coordinates: ${latitude.toFixed(6)}, ${longitude.toFixed(6)})
+                    `;
+                }
             },
             error => {
                 console.error("Geolocation error:", error);
-                locationText.innerHTML = `<i class="fas fa-exclamation-triangle" style="color:var(--warning-color)"></i> Location not available`;
-                addStatus('Location access denied. Attendance may require manager approval.', 'warning');
+                let errorMessage = "Location not available";
+                
+                switch(error.code) {
+                    case error.PERMISSION_DENIED:
+                        errorMessage = "Location access denied. Please enable permissions.";
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        errorMessage = "Location information unavailable.";
+                        break;
+                    case error.TIMEOUT:
+                        errorMessage = "Location request timed out.";
+                        break;
+                }
+                
+                locationText.innerHTML = `
+                    <i class="fas fa-exclamation-triangle" style="color:var(--warning-color)"></i> 
+                    ${errorMessage}
+                `;
+                
+                if (typeof addStatus === 'function') {
+                    addStatus('Location access denied. Attendance may require manager approval.', 'warning');
+                }
             },
             {
                 enableHighAccuracy: true,
@@ -535,9 +645,24 @@ function isMobile() {
             }
         );
     } else {
-        locationText.innerHTML = '<i class="fas fa-exclamation-triangle" style="color:var(--warning-color)"></i> Geolocation not supported';
+        locationText.innerHTML = `
+            <i class="fas fa-exclamation-triangle" style="color:var(--warning-color)"></i> 
+            Geolocation not supported by your browser
+        `;
     }
 }
+
+// Initialize when needed
+document.addEventListener('DOMContentLoaded', function() {
+    // If you have a button with ID 'getLocationBtn'
+    const locationButton = document.getElementById('getLocationBtn');
+    if (locationButton) {
+        locationButton.addEventListener('click', getLocation);
+    }
+    
+    // Or call directly if you want automatic location on page load
+    // getLocation();
+});
 
 
         // Update current time

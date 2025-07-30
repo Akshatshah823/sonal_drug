@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\LocationController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -18,6 +19,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/attendance', [AttendanceController::class, 'showForm'])->name('attendance.form');
     Route::post('/attendance', [AttendanceController::class, 'punch'])->name('attendance.punch');
+    Route::get('/locations', [LocationController::class, 'index'])->name('locations.index');
+    Route::get('/locations/manage', [LocationController::class, 'manage'])->name('locations.manage');
+
 });
 
 
