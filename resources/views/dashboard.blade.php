@@ -1,5 +1,4 @@
-<x-app-layout>
-   
+ @include('common.header')
 
  <!DOCTYPE html>
 <html lang="en">
@@ -94,11 +93,11 @@
         .fc {
             height: 100%;
         }
-        
+
         .fc .fc-toolbar-title {
             font-weight: 600;
             color: var(--primary-dark);
-            font-size: 1.25rem;
+            font-size: 1.50rem;
         }
 
         .fc .fc-button {
@@ -218,13 +217,14 @@
             padding: 0.375rem 0.75rem;
             font-size: 0.875rem;
         }
-        
+
         /* Ensure calendar has proper height */
         #calendar {
             height: 100% !important;
         }
     </style>
 </head>
+
 <body>
     <div class="dashboard-container">
         <div class="dashboard-header">
@@ -326,7 +326,7 @@
                                     <label class="form-label fw-medium">Select Month</label>
                                     <input type="month" class="form-control" id="monthSelect" value="<?php echo date('Y-m'); ?>">
                                 </div>
-                                
+
                                 <div id="attendanceSummary" style="height: calc(100% - 150px); overflow-y: auto;">
                                     <div class="text-center py-4">
                                         <div class="mb-3">
@@ -343,7 +343,7 @@
             </div>
         </div>
     </div>
-
+@include('common.footer')
     <!-- JavaScript Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
@@ -408,9 +408,9 @@
                 },
                 datesSet: function(info) {
                     updateSummaryCounts(info.start, info.end);
-                    document.getElementById('current-month').textContent = 
+                    document.getElementById('current-month').textContent =
                         info.view.title;
-                    document.getElementById('monthSelect').value = 
+                    document.getElementById('monthSelect').value =
                         `${info.start.getFullYear()}-${String(info.start.getMonth() + 1).padStart(2, '0')}`;
                 }
             });
@@ -477,7 +477,7 @@
                         <p class="text-muted">Loading attendance data...</p>
                     </div>
                 `;
-                
+
                 // Simulate API call delay
                 setTimeout(() => {
                     // Sample response handling
@@ -490,7 +490,7 @@
                                 </div>
                                 <span class="badge bg-primary">Employee #${employeeId}</span>
                             </div>
-                            
+
                             <div class="row g-2 mb-4">
                                 <div class="col-6">
                                     <div class="p-3 bg-light rounded">
@@ -517,10 +517,10 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <h6 class="fw-medium mb-3">Attendance Trend</h6>
                             <canvas id="attendanceChart" height="180"></canvas>
-                            
+
                             <div class="mt-4">
                                 <button class="btn btn-elegant w-100">
                                     <i class="fas fa-download me-2"></i> Export Report
@@ -528,9 +528,9 @@
                             </div>
                         </div>
                     `;
-                    
+
                     document.getElementById('attendanceSummary').innerHTML = summaryHTML;
-                    
+
                     // Sample chart
                     const ctx = document.getElementById('attendanceChart').getContext('2d');
                     new Chart(ctx, {
@@ -594,4 +594,4 @@
     </script>
 </body>
 </html>
-</x-app-layout>
+
