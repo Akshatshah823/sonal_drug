@@ -18,6 +18,7 @@ return new class extends Migration
             $table->decimal('latitude', 10, 7);
             $table->decimal('longitude', 10, 7);
             $table->timestamp('punched_at');
+             $table->softDeletes();
             $table->timestamps();
         });
     }

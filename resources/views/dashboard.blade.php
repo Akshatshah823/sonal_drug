@@ -1,6 +1,7 @@
- @include('common.header')
+@include('common.header')
+@include('common.navbar')
 
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -25,29 +26,50 @@
             background-color: #f5f7fa;
             font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
             color: #333;
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
+        }
+
+        .main-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .dashboard-content-container {
+            flex: 1;
+            margin-left: 250px;
+            transition: var(--transition);
+        }
+
+        @media (max-width: 992px) {
+            .dashboard-content-container {
+                margin-left: 70px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-content-container {
+                margin-left: 0;
+            }
         }
 
         .dashboard-container {
             display: flex;
             flex-direction: column;
-            height: 100vh;
+            min-height: 100vh;
             padding: 0;
         }
 
         .dashboard-header {
             background-color: white;
             border-bottom: 1px solid #e0e0e0;
-            padding: 1rem 2rem;
+            padding: 1rem;
             box-shadow: var(--card-shadow);
             z-index: 10;
         }
 
         .dashboard-content {
             flex: 1;
-            overflow: auto;
-            padding: 2rem;
+            padding: 1rem;
         }
 
         .stat-card {
@@ -58,21 +80,22 @@
             box-shadow: var(--card-shadow);
             height: 100%;
             background-color: white;
+            margin-bottom: 1rem;
         }
 
         .stat-card .card-body {
-            padding: 1.5rem;
+            padding: 1.25rem;
         }
 
         .stat-card .icon-wrapper {
-            width: 48px;
-            height: 48px;
+            width: 40px;
+            height: 40px;
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 1rem;
-            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
         }
 
         .stat-card.present .icon-wrapper { background-color: rgba(40, 167, 69, 0.1); color: var(--success-color); }
@@ -85,19 +108,20 @@
             overflow: hidden;
             box-shadow: var(--card-shadow);
             background: white;
-            height: 100%;
-            padding: 1rem;
+            height: 500px; /* Fixed height for better mobile display */
+            padding: 0.75rem;
+            margin-bottom: 1rem;
         }
 
         /* FullCalendar custom styles */
         .fc {
-            height: 100%;
+            height: 100% !important;
         }
 
         .fc .fc-toolbar-title {
             font-weight: 600;
             color: var(--primary-dark);
-            font-size: 1.50rem;
+            font-size: 1.25rem;
         }
 
         .fc .fc-button {
@@ -105,8 +129,8 @@
             border: 1px solid #e0e0e0;
             color: #555;
             transition: var(--transition);
-            padding: 0.375rem 0.75rem;
-            font-size: 0.875rem;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
         }
 
         .fc .fc-button:hover {
@@ -129,11 +153,11 @@
         }
 
         .attendance-badge {
-            font-size: 0.6875rem;
+            font-size: 0.6rem;
             font-weight: 500;
-            padding: 2px 6px;
-            border-radius: 4px;
-            margin-top: 2px;
+            padding: 2px 4px;
+            border-radius: 3px;
+            margin-top: 1px;
             display: inline-block;
         }
 
@@ -146,21 +170,23 @@
             overflow: hidden;
             box-shadow: var(--card-shadow);
             background: white;
-            height: 100%;
+            height: 500px; /* Fixed height to match calendar */
+            margin-bottom: 1rem;
         }
 
         .summary-card .card-header {
             background-color: white;
             color: var(--primary-dark);
-            padding: 1rem 1.5rem;
+            padding: 0.75rem 1rem;
             border-bottom: 1px solid #e0e0e0;
+            font-size: 0.9rem;
         }
 
         .form-select, .form-control {
             border-radius: 6px;
-            padding: 0.5rem 1rem;
+            padding: 0.5rem 0.75rem;
             border: 1px solid #e0e0e0;
-            font-size: 0.875rem;
+            font-size: 0.8rem;
         }
 
         .form-select:focus, .form-control:focus {
@@ -173,9 +199,9 @@
             color: white;
             border: none;
             border-radius: 6px;
-            padding: 0.5rem 1.25rem;
+            padding: 0.5rem 1rem;
             transition: var(--transition);
-            font-size: 0.875rem;
+            font-size: 0.8rem;
         }
 
         .btn-elegant:hover {
@@ -184,11 +210,11 @@
         }
 
         .fc-daygrid-day-number {
-            font-size: 0.875rem;
+            font-size: 0.75rem;
         }
 
         .fc-col-header-cell-cushion {
-            font-size: 0.8125rem;
+            font-size: 0.7rem;
             font-weight: 500;
             color: #555;
         }
@@ -197,143 +223,187 @@
             margin-top: 1px;
         }
 
-        .h-100 {
-            height: 100% !important;
-        }
-
         .dashboard-title {
             font-weight: 600;
             color: var(--primary-dark);
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             margin: 0;
         }
 
         .current-month {
-            font-size: 0.875rem;
+            font-size: 0.75rem;
             color: #666;
         }
 
         .nav-buttons .btn {
-            padding: 0.375rem 0.75rem;
-            font-size: 0.875rem;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
         }
 
-        /* Ensure calendar has proper height */
-        #calendar {
-            height: 100% !important;
+        /* Mobile specific adjustments */
+        @media (max-width: 576px) {
+            .dashboard-header {
+                padding: 0.75rem;
+            }
+            
+            .dashboard-title {
+                font-size: 1rem;
+            }
+            
+            .stat-card .card-body {
+                padding: 1rem;
+            }
+            
+            .stat-card h6 {
+                font-size: 0.75rem;
+            }
+            
+            .stat-card h2 {
+                font-size: 1.5rem;
+            }
+            
+            .calendar-container, .summary-card {
+                height: 400px;
+            }
+            
+            .fc .fc-toolbar-title {
+                font-size: 1rem;
+            }
+            
+            .fc .fc-button {
+                padding: 0.2rem 0.4rem;
+            }
+        }
+
+        /* Ensure proper spacing on small screens */
+        @media (max-width: 768px) {
+            .row.g-3 {
+                margin-bottom: 0.5rem;
+            }
+            
+            .col-md-3, .col-lg-8, .col-lg-4 {
+                padding-right: calc(var(--bs-gutter-x) * .5);
+                padding-left: calc(var(--bs-gutter-x) * .5);
+                margin-bottom: 0.5rem;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="dashboard-container">
-        <div class="dashboard-header">
-            <div class="container-fluid">
-                <div class="row align-items-center">
-                    <div class="col-md-6">
-                        <h1 class="dashboard-title">Attendance Dashboard</h1>
-                    </div>
-                    <div class="col-md-6 text-end">
-                        <div class="d-flex align-items-center justify-content-end">
-                            <span class="current-month me-3" id="current-month"><?php echo date('F Y'); ?></span>
-                            <div class="btn-group nav-buttons">
-                                <button class="btn btn-sm btn-outline-secondary" id="prevMonth">
-                                    <i class="fas fa-chevron-left"></i>
-                                </button>
-                                <button class="btn btn-sm btn-outline-secondary mx-1" id="currentMonth">
-                                    Today
-                                </button>
-                                <button class="btn btn-sm btn-outline-secondary" id="nextMonth">
-                                    <i class="fas fa-chevron-right"></i>
-                                </button>
+    <div class="main-container">
+        <!-- Main Content Area -->
+        <div class="dashboard-content-container">
+            <div class="dashboard-container">
+                <div class="dashboard-header">
+                    <div class="container-fluid">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h1 class="dashboard-title">Attendance Dashboard</h1>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="dashboard-content">
-            <div class="container-fluid">
-                <div class="row g-3 mb-4">
-                    <div class="col-md-3">
-                        <div class="stat-card present h-100">
-                            <div class="card-body">
-                                <div class="icon-wrapper">
-                                    <i class="fas fa-check-circle"></i>
+                            <div class="col-md-6 text-end">
+                                <div class="d-flex align-items-center justify-content-end">
+                                    <span class="current-month me-2" id="current-month"><?php echo date('F Y'); ?></span>
+                                    <div class="btn-group nav-buttons">
+                                        <button class="btn btn-sm btn-outline-secondary" id="prevMonth">
+                                            <i class="fas fa-chevron-left"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-secondary mx-1" id="currentMonth">
+                                            Today
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-secondary" id="nextMonth">
+                                            <i class="fas fa-chevron-right"></i>
+                                        </button>
+                                    </div>
                                 </div>
-                                <h6 class="text-muted mb-2">Present Days</h6>
-                                <h2 id="presentCount" class="mb-0">0</h2>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="stat-card absent h-100">
-                            <div class="card-body">
-                                <div class="icon-wrapper">
-                                    <i class="fas fa-times-circle"></i>
-                                </div>
-                                <h6 class="text-muted mb-2">Absent Days</h6>
-                                <h2 id="absentCount" class="mb-0">0</h2>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="stat-card holiday h-100">
-                            <div class="card-body">
-                                <div class="icon-wrapper">
-                                    <i class="fas fa-umbrella-beach"></i>
-                                </div>
-                                <h6 class="text-muted mb-2">Holidays</h6>
-                                <h2 id="holidayCount" class="mb-0">0</h2>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="stat-card percentage h-100">
-                            <div class="card-body">
-                                <div class="icon-wrapper">
-                                    <i class="fas fa-percentage"></i>
-                                </div>
-                                <h6 class="text-muted mb-2">Attendance %</h6>
-                                <h2 id="attendancePercent" class="mb-0">0%</h2>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="row g-3" style="height: calc(100% - 180px);">
-                    <div class="col-lg-8" style="height: 100%;">
-                        <div class="calendar-container h-100">
-                            <div id="calendar"></div>
-                        </div>
-                    </div>
-                    <div class="col-lg-4" style="height: 100%;">
-                        <div class="summary-card h-100">
-                            <div class="card-header">
-                                <h5 class="mb-0"><i class="fas fa-chart-pie me-2"></i> Monthly Summary</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="mb-3">
-                                    <label class="form-label fw-medium">Select Employee</label>
-                                    <select class="form-select" id="employeeSelect">
-                                        <option value="1">John Doe</option>
-                                        <option value="2">Jane Smith</option>
-                                        <option value="3">Robert Johnson</option>
-                                    </select>
-                                </div>
-                                <div class="mb-4">
-                                    <label class="form-label fw-medium">Select Month</label>
-                                    <input type="month" class="form-control" id="monthSelect" value="<?php echo date('Y-m'); ?>">
-                                </div>
-
-                                <div id="attendanceSummary" style="height: calc(100% - 150px); overflow-y: auto;">
-                                    <div class="text-center py-4">
-                                        <div class="mb-3">
-                                            <i class="fas fa-user-clock fa-3x text-primary opacity-25"></i>
+                <div class="dashboard-content">
+                    <div class="container-fluid">
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6 col-lg-3">
+                                <div class="stat-card present h-100">
+                                    <div class="card-body">
+                                        <div class="icon-wrapper">
+                                            <i class="fas fa-check-circle"></i>
                                         </div>
-                                        <h6 class="text-muted">Select an employee and month</h6>
-                                        <p class="small text-muted">Attendance details will appear here</p>
+                                        <h6 class="text-muted mb-2">Present Days</h6>
+                                        <h2 id="presentCount" class="mb-0">0</h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-3">
+                                <div class="stat-card absent h-100">
+                                    <div class="card-body">
+                                        <div class="icon-wrapper">
+                                            <i class="fas fa-times-circle"></i>
+                                        </div>
+                                        <h6 class="text-muted mb-2">Absent Days</h6>
+                                        <h2 id="absentCount" class="mb-0">0</h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-3">
+                                <div class="stat-card holiday h-100">
+                                    <div class="card-body">
+                                        <div class="icon-wrapper">
+                                            <i class="fas fa-umbrella-beach"></i>
+                                        </div>
+                                        <h6 class="text-muted mb-2">Holidays</h6>
+                                        <h2 id="holidayCount" class="mb-0">0</h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-3">
+                                <div class="stat-card percentage h-100">
+                                    <div class="card-body">
+                                        <div class="icon-wrapper">
+                                            <i class="fas fa-percentage"></i>
+                                        </div>
+                                        <h6 class="text-muted mb-2">Attendance %</h6>
+                                        <h2 id="attendancePercent" class="mb-0">0%</h2>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-lg-8">
+                                <div class="calendar-container">
+                                    <div id="calendar"></div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="summary-card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0"><i class="fas fa-chart-pie me-2"></i> Monthly Summary</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label class="form-label fw-medium">Select Employee</label>
+                                            <select class="form-select" id="employeeSelect">
+                                                <option value="1">John Doe</option>
+                                                <option value="2">Jane Smith</option>
+                                                <option value="3">Robert Johnson</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-4">
+                                            <label class="form-label fw-medium">Select Month</label>
+                                            <input type="month" class="form-control" id="monthSelect" value="<?php echo date('Y-m'); ?>">
+                                        </div>
+
+                                        <div id="attendanceSummary" style="height: calc(100% - 130px); overflow-y: auto;">
+                                            <div class="text-center py-4">
+                                                <div class="mb-3">
+                                                    <i class="fas fa-user-clock fa-3x text-primary opacity-25"></i>
+                                                </div>
+                                                <h6 class="text-muted">Select an employee and month</h6>
+                                                <p class="small text-muted">Attendance details will appear here</p>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -343,7 +413,8 @@
             </div>
         </div>
     </div>
-@include('common.footer')
+
+    @include('common.footer')
     <!-- JavaScript Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
@@ -363,7 +434,7 @@
                 },
                 height: '100%',
                 contentHeight: 'auto',
-                aspectRatio: 1.5,
+                aspectRatio: 1.2,
                 eventDidMount: function(info) {
                     // Add custom styling to events
                     if(info.event.extendedProps.description) {
@@ -594,4 +665,3 @@
     </script>
 </body>
 </html>
-
