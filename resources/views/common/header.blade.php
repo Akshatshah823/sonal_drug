@@ -21,11 +21,7 @@
                 </a>
             </div>
 
-            <!-- Mobile Menu Toggle -->
-            <button class="navbar-toggler-premium d-lg-none" id="mobileMenuToggle">
-                <i class="fas fa-bars"></i>
-            </button>
-
+         
             <!-- Right Section with Premium White Elements -->
             <div class="d-flex align-items-center gap-4" id="headerControls">
                 <!-- Elegant Date Navigation -->
@@ -93,18 +89,8 @@
             </div>
         </div>
         
-        <!-- Mobile Menu -->
-        <div class="mobile-menu-container d-lg-none" id="mobileMenu">
-            <div class="mobile-date-navigator">
-                <button id="mobilePrevMonth" class="btn btn-icon-premium" aria-label="Previous month">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-                <span class="current-date-premium">{{ now()->format('F Y') }}</span>
-                <button id="mobileNextMonth" class="btn btn-icon-premium" aria-label="Next month">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-            </div>
-        </div>
+      
+        
     </div>
 </header>
 
